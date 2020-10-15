@@ -26,7 +26,7 @@ const TaskManager = () => {
 
     //Schema
     const eachTask = {
-        timeRemaining: 20,
+        timeRemaining: 0,
         isServerAssigned: false,
     }
 
@@ -65,7 +65,7 @@ const TaskManager = () => {
             setServerCount(serverCount => serverCount - 1);
         }
         else {
-            openToastHandler("Require 1 server to be running!");
+            openToastHandler("Require at least 1 server to be running!");
         }
 
     }
@@ -87,10 +87,16 @@ const TaskManager = () => {
 
     }
 
+    const updateRemainingTime = (index) => {
+        if (activeQueue[index] && activeQueue[index].isServerAssigned) {
+            activeQueue[index].timeRemaining += 1;
+        }
+    }
+
     const removeTaskFromQueueHandler = (index) => {
         console.log(index);
         let tempTask = _.cloneDeep(numberofTaskInQueue);
-        if (!tempTask[index].isServerAssigned) {
+        if (tempTask[index] && !tempTask[index].isServerAssigned) {
             tempTask.splice(index, 1);
             setNumberofTaskInQueue(tempTask);
         }
@@ -150,7 +156,7 @@ const TaskManager = () => {
             </Grid>
             <Grid item xs={12}>
                 {/* Server Manager */}
-                <div>Server Manager</div>
+                <div><span className={Styles.subheading}>Server Manager</span></div>
                 <div className={Styles.serverManager}>
                     Number of Live Server: {serverCount}
                     <Button className={Styles.addServerButton} onClick={addServerHandler}>Add a Server</Button>
@@ -158,10 +164,11 @@ const TaskManager = () => {
                 </div>
             </Grid>
             <Grid item xs={12}>
-                <div>Task Queue</div>
+                <div><span className={Styles.subheading}>Task Queue</span></div>
                 <div className={Styles.serverManager}>
                     {/* Task Manager */}
-                    Number of Task In Queue: {numberofTaskInQueue.length}
+                    Active Task Queue:  <span className={Styles.taskQueueInfo}> {activeQueue.length} </span>
+                    Waiting Task Queue: <span className={Styles.taskQueueInfo}> {numberofTaskInQueue.length} </span>
                     <input type="number" id="tasks" name="tasks" min="1" defaultValue="0" className={Styles.inputTaskRef} ref={inputTaskRef} />
                     <Button className={Styles.addServerButton} onClick={AddTaskToQueueHandler}>Add tasks</Button>
 
@@ -172,7 +179,9 @@ const TaskManager = () => {
                             isAssigned={eachTask.isServerAssigned}
                             taskIndex={index}
                             removeHandler={removeTaskFromQueueHandler}
-                            key={"activeIndex" + Math.random()} />
+                            updateRemainingTime={updateRemainingTime}
+                            key={"activeIndex" + Math.random()}
+                        />
                     })}
                     {/* Inactive Tasks */}
                     {getTaskInQueue()}

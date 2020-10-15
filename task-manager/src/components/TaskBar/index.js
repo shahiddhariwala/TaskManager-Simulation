@@ -9,15 +9,21 @@ import Styles from "./index.module.css";
 const TaskBar = (props) => {
     //Varibles and Functions
     const removeHandler = props.removeHandler;
-
+    const updateRemainingTime = props.updateRemainingTime;
     //State
-    const [progressBarValue, setProgressBarValue] = useState(1);
+    const [progressBarValue, setProgressBarValue] = useState(props.value);
     const [isAssigned, setIsAssigned] = useState(props.isAssigned);
 
+
     //Lifecycle
+    useEffect(()=>
+    {
+        setProgressBarValue(progressBarValue=> props.value);
+    },[props.value]);
+    
     useEffect(() => {
         if (progressBarValue < 20 && isAssigned === true) {
-            setTimeout(() => setProgressBarValue(progressBarValue => progressBarValue + 1), 1000);
+            setTimeout(() => updateRemainingTime(props.taskIndex), 1000);
         }
     }, [isAssigned, progressBarValue]);
 
