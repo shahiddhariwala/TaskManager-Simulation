@@ -54,10 +54,4 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         updateRemianingTime: (index) => dispatch({ type: "UPDATE_ACTIVETASK", index: index }),
-//     };
-// };
-
 export default connect(mapStateToProps)(TaskBar);
